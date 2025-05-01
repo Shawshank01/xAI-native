@@ -101,7 +101,8 @@ If you encounter CORS issues, make sure the server is running.
 ├── script.js         # Frontend logic (submission, rendering)
 ├── gserver.js        # Node.js backend server
 ├── package.json      # Project metadata and dependencies
-├── .env              # API keys (should be in .gitignore)
+├── package-lock.json # Dependency lock file
+├── .env              # API keys (should be create by yourself before run)
 ```
 
 ---

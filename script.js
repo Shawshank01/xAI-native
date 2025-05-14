@@ -1,3 +1,16 @@
+// Detect system color scheme and set dark mode as early as possible
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark-mode');
+}
+// Listen for system color scheme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (e.matches) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+});
+
 document.getElementById('chatForm').addEventListener('submit', async function(event) {
     event.preventDefault();  // Prevent form reload
     
@@ -73,13 +86,39 @@ document.getElementById('questionInput').addEventListener('keydown', function(ev
 });
 
 window.onload = function() {
-  // Detect system color scheme and set dark mode automatically
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark-mode');
-  }
   const history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
   history.forEach(msg => {
     // Your function to display messages
     displayMessage(msg.sender, msg.text);
   });
 };
+
+// Display a chat message as a dialog bubble
+function displayMessage(sender, text) {
+    const chat = document.getElementById('chat');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message ' + (sender === 'user' ? 'user' : 'ai');
+    // Add sender label for accessibility
+    const label = document.createElement('div');
+    label.style.fontSize = '12px';
+    label.style.marginBottom = '2px';
+    label.style.opacity = '0.7';
+    label.textContent = (sender === 'user' ? 'You' : 'AI');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    msgDiv.appendChild(label);
+    msgDiv.appendChild(bubble);
+    chat.appendChild(msgDiv);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// Dark mode toggle button logic
+window.addEventListener('DOMContentLoaded', function() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.onclick = function() {
+            document.body.classList.toggle('dark-mode');
+        };
+    }
+});

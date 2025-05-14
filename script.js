@@ -6,16 +6,31 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
     responseDiv.innerHTML = 'Loading...';  // Show loading state
     
     try {
+        let history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
+        // Add system prompt if not present
+        if (history.length === 0 || history[0].role !== 'system') {
+            history.unshift({
+                role: 'system',
+                content: [{ type: 'text', text: 'You are a helpful and funny assistant.' }]
+            });
+        }
+        // Add the new user message in xAI format
+        history.push({
+            role: 'user',
+            content: [{ type: 'text', text: question }]
+        });
+        // Send the full history to the backend
         const serverResponse = await fetch('http://localhost:3000/ask-xai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: question }),
+            body: JSON.stringify({ messages: history }),
         });
         
         if (!serverResponse.ok) {
-            throw new Error('Server error');
+            const errorText = await serverResponse.text();
+            throw new Error(`Server error: ${errorText}`);
         }
         
         // Handle streaming response
@@ -31,6 +46,17 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
             responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${processedResult}`;  // Update in real-time
         }
         document.getElementById('questionInput').value = '';  // Clear the input field
+
+        // Add the assistant's response to history
+        history.push({
+            role: 'assistant',
+            content: [{ type: 'text', text: result }]
+        });
+        // Save back to sessionStorage
+        sessionStorage.setItem('conversationHistory', JSON.stringify(history));
+        // Display messages in chat area
+        displayMessage('user', question);
+        displayMessage('ai', result);
     } catch (error) {
         responseDiv.innerHTML = `Error: ${error.message}`;
         console.error(error);
@@ -45,3 +71,15 @@ document.getElementById('questionInput').addEventListener('keydown', function(ev
     }
     // If Shift+Enter is pressed, do nothing to allow new lines
 });
+
+window.onload = function() {
+  // Detect system color scheme and set dark mode automatically
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark-mode');
+  }
+  const history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
+  history.forEach(msg => {
+    // Your function to display messages
+    displayMessage(msg.sender, msg.text);
+  });
+};

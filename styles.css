@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    transition: background 0.3s, color 0.3s;
 }
 
 #response {
@@ -9,6 +10,7 @@ body {
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     white-space: pre-wrap;
+    transition: background 0.3s, color 0.3s;
 }
 
 #questionInput {
@@ -17,4 +19,43 @@ body {
     padding: 10px;
     font-size: 16px;
     resize: vertical;
+    background: #fff;
+    color: #222;
+    border: 1px solid #ccc;
+    transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background: #181818;
+    color: #e0e0e0;
+}
+body.dark-mode #response {
+    background-color: #232323;
+    color: #e0e0e0;
+    border-color: #444;
+}
+body.dark-mode #questionInput {
+    background: #232323;
+    color: #e0e0e0;
+    border-color: #444;
+}
+#chat .message.user {
+    text-align: right;
+    color: #90caf9;
+}
+#chat .message.ai {
+    text-align: left;
+    color: #a5d6a7;
+}
+#darkModeToggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
 }

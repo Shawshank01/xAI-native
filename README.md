@@ -2,9 +2,9 @@
 
 ## Description
 
-This is a simple web application that allows users to chat with xAI's API (e.g., Grok) by submitting questions through a form. The app sends requests to a local server, processes responses, and displays them on the page with Markdown formatting for better readability.
+This is a local, user-friendly web application that provides a graphical interface for chatting with Grok AI via xAI's cloud API. Designed for users who prefer not to interact through code, terminal commands, or scripts, this tool allows seamless communication with Grok using a simple text input and rich Markdown-rendered responses.
 
-It's built using **HTML, CSS, and JavaScript** for the frontend, and **Node.js with Express** for the backend server.
+The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Node.js with Express** to securely handle API requests and manage conversation context.
 
 This project was developed to demonstrate a basic chat interface, including features like expanded input areas, auto-clearing messages, Enter key submission, **dark mode (auto and manual switch)**, **chat bubbles for dialog history**, and **persistent conversation context**. It's intended for educational or personal use, assuming you have access to xAI's API.
 

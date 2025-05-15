@@ -1,6 +1,6 @@
 // server.js (or modify g.js to this)
 import express, { json } from 'express';
-import OpenAI from 'openai';  // Assuming you have this installed
+import OpenAI from 'openai';  // Pre-installation is required
 import cors from 'cors';  // To handle CORS for browser requests
 import dotenv from 'dotenv';
 dotenv.config();
@@ -16,10 +16,10 @@ const client = new OpenAI({
 
 // Endpoint to handle chat requests
 app.post('/ask-xai', async (req, res) => {
-    const { messages } = req.body;  // Expect the messages array in the request body
+    const { messages, model } = req.body;  // Expect the messages array and model in the request body
     try {
         const completion = await client.chat.completions.create({
-            model: "grok-3-latest",
+            model: model || "grok-3-latest",
             messages: messages,  // Forward the full conversation history
             stream: true,
         });

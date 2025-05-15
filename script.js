@@ -11,6 +11,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
     }
 });
 
+let currentModel = 'grok-3-latest';
+
 document.getElementById('chatForm').addEventListener('submit', async function(event) {
     event.preventDefault();  // Prevent form reload
     
@@ -32,13 +34,13 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
             role: 'user',
             content: [{ type: 'text', text: question }]
         });
-        // Send the full history to the backend
+        // Send the full history and model to the backend
         const serverResponse = await fetch('http://localhost:3000/ask-xai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ messages: history }),
+            body: JSON.stringify({ messages: history, model: currentModel }),
         });
         
         if (!serverResponse.ok) {
@@ -85,14 +87,6 @@ document.getElementById('questionInput').addEventListener('keydown', function(ev
     // If Shift+Enter is pressed, do nothing to allow new lines
 });
 
-window.onload = function() {
-  const history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
-  history.forEach(msg => {
-    // Your function to display messages
-    displayMessage(msg.sender, msg.text);
-  });
-};
-
 // Display a chat message as a dialog bubble
 function displayMessage(sender, text) {
     const chat = document.getElementById('chat');
@@ -121,4 +115,28 @@ window.addEventListener('DOMContentLoaded', function() {
             document.body.classList.toggle('dark-mode');
         };
     }
+    // Model toggle logic
+    const modelToggle = document.getElementById('modelToggle');
+    const modelHint = document.getElementById('modelHint');
+    if (modelToggle && modelHint) {
+        // Set initial hint
+        modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : 'Current model: Grok-3 Mini';
+        modelToggle.onclick = function() {
+            console.log('Button clicked!'); // Debug log
+            if (currentModel === 'grok-3-latest') {
+                currentModel = 'grok-3-mini-latest';
+                modelToggle.classList.add('active'); // Keep active color for mini model
+            } else {
+                currentModel = 'grok-3-latest';
+                modelToggle.classList.remove('active'); // Remove active color for main model
+            }
+            modelToggle.textContent = 'Thinking';
+            modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : 'Current model: Grok-3 Mini';
+        };
+    }
+    // Display chat history
+    const history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
+    history.forEach(msg => {
+        displayMessage(msg.sender, msg.text);
+    });
 });

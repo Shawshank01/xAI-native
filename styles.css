@@ -96,3 +96,26 @@ body.dark-mode #chat .message.user .bubble {
     cursor: pointer;
     transition: background 0.3s, color 0.3s;
 }
+#modelHint {
+    font-size: 12px;
+    margin-bottom: 8px;
+    color: #888;
+}
+#modelToggle {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 15px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+#modelToggle.active, #modelToggle:active {
+    background: #1976d2;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+    border-color: #1976d2;
+}

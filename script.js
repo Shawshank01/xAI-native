@@ -13,13 +13,13 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
 
 let currentModel = 'grok-3-latest';
 
-document.getElementById('chatForm').addEventListener('submit', async function(event) {
+document.getElementById('chatForm').addEventListener('submit', async function (event) {
     event.preventDefault();  // Prevent form reload
-    
+
     const question = document.getElementById('questionInput').value;  // Get the user's input
     const responseDiv = document.getElementById('response');
     responseDiv.innerHTML = 'Loading...';  // Show loading state
-    
+
     try {
         let history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
         // Add system prompt if not present
@@ -42,36 +42,60 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
             },
             body: JSON.stringify({ messages: history, model: currentModel }),
         });
-        
+
         if (!serverResponse.ok) {
             const errorText = await serverResponse.text();
             throw new Error(`Server error: ${errorText}`);
         }
-        
-        // Handle streaming response
-        const reader = serverResponse.body.getReader();
-        const decoder = new TextDecoder();
-        let result = '';
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            result += chunk;
-            let processedResult = marked.parse(result);  // Convert Markdown to HTML
-            responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${processedResult}`;  // Update in real-time
-        }
-        document.getElementById('questionInput').value = '';  // Clear the input field
 
-        // Add the assistant's response to history
-        history.push({
-            role: 'assistant',
-            content: [{ type: 'text', text: result }]
-        });
+        // Handle response based on model
+        if (currentModel === 'grok-2-image') {
+            // Handle image generation response (non-streaming JSON)
+            const responseData = await serverResponse.json();
+            let result = '';
+            if (responseData.images && responseData.images.length > 0) {
+                result = 'Generated Images:\n';
+                responseData.images.forEach((img, index) => {
+                    result += `Image ${index + 1}: <img src="${img.url}" alt="Generated Image ${index + 1}" style="max-width: 100%; height: auto;"><br>`;
+                });
+            } else {
+                result = 'No images generated. Response: ' + JSON.stringify(responseData);
+            }
+            responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${result}`;
+            // Add the assistant's response to history
+            history.push({
+                role: 'assistant',
+                content: [{ type: 'text', text: result }]
+            });
+            // Display messages in chat area
+            displayMessage('user', question);
+            displayMessage('ai', result);
+        } else {
+            // Handle streaming response for text
+            const reader = serverResponse.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                result += chunk;
+                let processedResult = marked.parse(result);  // Convert Markdown to HTML
+                responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${processedResult}`;  // Update in real-time
+            }
+            // Add the assistant's response to history
+            history.push({
+                role: 'assistant',
+                content: [{ type: 'text', text: result }]
+            });
+            // Display messages in chat area
+            displayMessage('user', question);
+            displayMessage('ai', result);
+        }
+
+        document.getElementById('questionInput').value = '';  // Clear the input field
         // Save back to sessionStorage
         sessionStorage.setItem('conversationHistory', JSON.stringify(history));
-        // Display messages in chat area
-        displayMessage('user', question);
-        displayMessage('ai', result);
     } catch (error) {
         responseDiv.innerHTML = `Error: ${error.message}`;
         console.error(error);
@@ -79,7 +103,7 @@ document.getElementById('chatForm').addEventListener('submit', async function(ev
 });
 
 // New: Add event listener for Enter key on the textarea
-document.getElementById('questionInput').addEventListener('keydown', function(event) {
+document.getElementById('questionInput').addEventListener('keydown', function (event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();  // Prevent adding a new line
         document.getElementById('chatForm').dispatchEvent(new Event('submit'));  // Trigger form submit
@@ -100,7 +124,7 @@ function displayMessage(sender, text) {
     label.textContent = (sender === 'user' ? 'You' : 'AI');
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.textContent = text;
+    bubble.innerHTML = text; // Use innerHTML to render image tags
     msgDiv.appendChild(label);
     msgDiv.appendChild(bubble);
     chat.appendChild(msgDiv);
@@ -108,30 +132,45 @@ function displayMessage(sender, text) {
 }
 
 // Dark mode toggle button logic
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
     const darkModeToggle = document.getElementById('darkModeToggle');
     if (darkModeToggle) {
-        darkModeToggle.onclick = function() {
+        darkModeToggle.onclick = function () {
             document.body.classList.toggle('dark-mode');
         };
     }
     // Model toggle logic
     const modelToggle = document.getElementById('modelToggle');
+    const imageModelToggle = document.getElementById('imageModelToggle');
     const modelHint = document.getElementById('modelHint');
-    if (modelToggle && modelHint) {
+    const questionInput = document.getElementById('questionInput');
+    if (modelToggle && imageModelToggle && modelHint && questionInput) {
         // Set initial hint
-        modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : 'Current model: Grok-3 Mini';
-        modelToggle.onclick = function() {
-            console.log('Button clicked!'); // Debug log
+        modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : currentModel === 'grok-3-mini-latest' ? 'Current model: Grok-3 Mini' : 'Current model: Grok-2 Image';
+
+        modelToggle.onclick = function () {
+            console.log('Text Model Button clicked!');
             if (currentModel === 'grok-3-latest') {
                 currentModel = 'grok-3-mini-latest';
-                modelToggle.classList.add('active'); // Keep active color for mini model
+                modelToggle.classList.add('active');
+                imageModelToggle.classList.remove('active');
             } else {
                 currentModel = 'grok-3-latest';
-                modelToggle.classList.remove('active'); // Remove active color for main model
+                modelToggle.classList.remove('active');
+                imageModelToggle.classList.remove('active');
             }
             modelToggle.textContent = 'Thinking';
             modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : 'Current model: Grok-3 Mini';
+            questionInput.placeholder = 'e.g., What\'s the meaning of life?';
+        };
+
+        imageModelToggle.onclick = function () {
+            console.log('Image Model Button clicked!');
+            currentModel = 'grok-2-image';
+            imageModelToggle.classList.add('active');
+            modelToggle.classList.remove('active');
+            modelHint.textContent = 'Current model: Grok-2 Image';
+            questionInput.placeholder = 'e.g., A view in space';
         };
     }
     // Display chat history

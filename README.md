@@ -75,28 +75,30 @@ If you encounter CORS issues, make sure the server is running.
 
 ### 3. Interact with the App
 
-- Type a question in the textarea.
-- Press **Enter** or click **Send** to submit.
-- See responses rendered with Markdown formatting below.
-- **Switch between light and dark mode** using the "Switch Theme" button, or let the app follow your system's default theme automatically.
-- **Switch between Grok-3 and Grok-3 Mini models** using the "Thinking" button above the input. The current model is shown as a hint below the button.
-- **All conversation history is shown as dialog bubbles** for improved readability.
-- **Context is preserved**: The AI will remember previous messages in the session until you close the browser tab.
+   - Type a question in the textarea.
+   - Press **Enter** or click **Send** to submit.
+   - See responses rendered with Markdown formatting below.
+   - **Switch between light and dark mode** using the "Switch Theme" button, or let the app follow your system's default theme automatically.
+   - **Switch between Grok-3 and Grok-3 Mini models** using the "Thinking" button above the input. The current model is shown as a hint below the button.
+   - **Switch to Grok-2 Image model** using the "Image Generation" button to generate images based on your prompt (e.g., "A view in space"). Generated images will be displayed in the response area.
+   - **All conversation history is shown as dialog bubbles** for improved readability.
+   - **Context is preserved**: The AI will remember previous messages in the session until you close the browser tab.
 
 ---
 
-## Features
+### Features
 
-- **User-Friendly Interface**: Responsive layout with a styled input area and result display.
-- **Markdown Rendering**: Uses `marked` to parse and render formatted responses.
-- **Streaming Support**: Displays API responses in real-time.
-- **Error Handling**: Friendly error messages for network or API issues.
-- **Secure Key Management**: Uses `.env` to protect your API key.
-- **Dark Mode**: Automatically detects your system's color scheme and applies dark or light mode. You can also manually switch themes with the "Switch Theme" button.
-- **Model Switching**: Use the "Thinking" button to toggle between Grok-3 and Grok-3 Mini models. The button stays highlighted when Grok-3 Mini is active, and a hint below the button shows the current model.
-- **Chat Bubbles/Dialog Boxes**: User and AI messages are shown in visually distinct dialog bubbles for easy reading.
-- **Persistent Conversation Context**: The conversation history is stored in your browser session and sent to the AI for context-aware responses.
-- **Clean Code Structure**: All JavaScript is in `script.js` (no inline scripts in HTML).
+   - **User-Friendly Interface**: Responsive layout with a styled input area and result display.
+   - **Markdown Rendering**: Uses `marked` to parse and render formatted responses.
+   - **Streaming Support**: Displays API responses in real-time.
+   - **Error Handling**: Friendly error messages for network or API issues.
+   - **Secure Key Management**: Uses `.env` to protect your API key.
+   - **Dark Mode**: Automatically detects your system's color scheme and applies dark or light mode. You can also manually switch themes with the "Switch Theme" button.
+   - **Model Switching**: Use the "Thinking" button to toggle between Grok-3 and Grok-3 Mini models. The button stays highlighted when Grok-3 Mini is active, and a hint below the button shows the current model.
+   - **Image Generation**: Use the "Image Generation" button to switch to the Grok-2 Image model for generating images based on your text prompt. Images are displayed in the chat.
+   - **Chat Bubbles/Dialog Boxes**: User and AI messages are shown in visually distinct dialog bubbles for easy reading.
+   - **Persistent Conversation Context**: The conversation history is stored in your browser session and sent to the AI for context-aware responses.
+   - **Clean Code Structure**: All JavaScript is in `script.js` (no inline scripts in HTML).
 
 ---
 

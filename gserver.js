@@ -3,11 +3,20 @@ import express, { json } from 'express';
 import OpenAI from 'openai';  // Pre-installation is required
 import cors from 'cors';  // To handle CORS for browser requests
 import dotenv from 'dotenv';
+import path from 'path';  // Add path module to serve static files
+import { fileURLToPath } from 'url';  // For ES module compatibility
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(json());  // Parse JSON bodies
 app.use(cors());  // Allow cross-origin requests (adjust for production security)
+
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
 const client = new OpenAI({
     apiKey: process.env.XAI_API_KEY,  // Use environment variables for security

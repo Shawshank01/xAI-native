@@ -145,8 +145,8 @@ dist
 *.pid
 
 # macOS specific files
-.DS_Store  # Files created by macOS Finder
-.AppleDouble  # macOS metadata files
+.DS_Store
+.AppleDouble
 
 # Build and distribution files (if applicable)
 dist/

@@ -1,10 +1,9 @@
-// server.js (or modify g.js to this)
 import express, { json } from 'express';
-import OpenAI from 'openai';  // Pre-installation is required
-import cors from 'cors';  // To handle CORS for browser requests
+import OpenAI from 'openai';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';  // Add path module to serve static files
-import { fileURLToPath } from 'url';  // For ES module compatibility
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -12,34 +11,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(json());  // Parse JSON bodies
-app.use(cors());  // Allow cross-origin requests (adjust for production security)
+app.use(json());
+app.use(cors());
 
-// Serve static files from the root directory
 app.use(express.static(__dirname));
 
 const client = new OpenAI({
-    apiKey: process.env.XAI_API_KEY,  // Use environment variables for security
+    apiKey: process.env.XAI_API_KEY,
     baseURL: "https://api.x.ai/v1",
 });
 
-// Endpoint to handle chat requests and image generation
 app.post('/ask-xai', async (req, res) => {
-    const { messages, model } = req.body;  // Expect the messages array and model in the request body
+    const { messages, model } = req.body;
     try {
-        if (model === 'grok-2-image') {
-            // Handle image generation request using the correct endpoint
-            const prompt = messages[messages.length - 1].content[0].text; // Use the latest user message as the prompt
+        if (model && model.startsWith('grok-imagine')) {
+            const prompt = messages[messages.length - 1].content[0].text;
             const imageResponse = await client.images.generate({
-                model: "grok-2-image",
+                model: model,
                 prompt: prompt,
                 n: 2 // Generate 2 images as per the curl example
             });
             res.json({ images: imageResponse.data });
         } else {
-            // Handle chat request
             const completion = await client.chat.completions.create({
-                model: model || "grok-3-latest",
+                model: model || "grok-4.20-0309-reasoning",
                 messages: messages,  // Forward the full conversation history
                 stream: true,
             });
@@ -59,7 +54,7 @@ app.post('/ask-xai', async (req, res) => {
 });
 
 // Start the server
-const PORT = 3000;  // Or any port you prefer
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

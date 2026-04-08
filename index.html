@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xAI Chat</title>
-    <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -14,18 +13,33 @@
     <h1>Chat with xAI</h1>
     <div id="chat"></div>
     <form id="chatForm">
-        <button id="modelToggle" type="button">Thinking</button>
-        <button id="imageModelToggle" type="button">Image Generation</button>
+        <select id="textModelSelect" class="model-select">
+            <option value="default" disabled hidden>Language Models...</option>
+            <option value="grok-4.20-0309-reasoning" selected>grok-4.20-0309-reasoning</option>
+            <option value="grok-4.20-0309-non-reasoning">grok-4.20-0309-non-reasoning</option>
+            <option value="grok-4.20-multi-agent-0309">grok-4.20-multi-agent-0309</option>
+            <option value="grok-4-1-fast-reasoning">grok-4-1-fast-reasoning</option>
+            <option value="grok-4-1-fast-non-reasoning">grok-4-1-fast-non-reasoning</option>
+        </select>
+        <select id="imageModelSelect" class="model-select">
+            <option value="default" disabled selected>Generate Image...</option>
+            <option value="grok-imagine-image-pro">grok-imagine-image-pro</option>
+            <option value="grok-imagine-image">grok-imagine-image</option>
+        </select>
         <div id="modelHint">Current model: Grok-3</div>
         <label for="questionInput">Enter your question:</label>
         <textarea id="questionInput" placeholder="e.g., What's the meaning of life?" required></textarea>
-        <button type="submit">Send</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; width: 80%;">
+            <button type="submit"
+                style="background: #1976d2; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer;">Send</button>
+            <button type="button" id="clearChatBtn"
+                style="background: #e53935; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer;">Clear
+                Chat</button>
+        </div>
     </form>
-    <div id="response"></div>
 
-    <!-- Link to the external JavaScript file -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> <!-- For Markdown parsing -->
-    <script src="script.js"></script> <!-- Custom JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

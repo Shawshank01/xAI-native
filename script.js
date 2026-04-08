@@ -11,18 +11,20 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
     }
 });
 
-let currentModel = 'grok-3-latest';
+let currentModel = 'grok-4.20-0309-reasoning';
 
 document.getElementById('chatForm').addEventListener('submit', async function (event) {
-    event.preventDefault();  // Prevent form reload
+    event.preventDefault();
 
-    const question = document.getElementById('questionInput').value;  // Get the user's input
-    const responseDiv = document.getElementById('response');
-    responseDiv.innerHTML = 'Loading...';  // Show loading state
+    const question = document.getElementById('questionInput').value;
+
+    // Display the user message immediately
+    displayMessage('user', question);
+    // Create AI bubble for loading
+    const aiBubble = displayMessage('ai', 'Loading...');
 
     try {
         let history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
-        // Add system prompt if not present
         if (history.length === 0 || history[0].role !== 'system') {
             history.unshift({
                 role: 'system',
@@ -48,9 +50,7 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
             throw new Error(`Server error: ${errorText}`);
         }
 
-        // Handle response based on model
-        if (currentModel === 'grok-2-image') {
-            // Handle image generation response (non-streaming JSON)
+        if (currentModel.startsWith('grok-imagine')) {
             const responseData = await serverResponse.json();
             let result = '';
             if (responseData.images && responseData.images.length > 0) {
@@ -61,15 +61,12 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
             } else {
                 result = 'No images generated. Response: ' + JSON.stringify(responseData);
             }
-            responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${result}`;
+            aiBubble.innerHTML = result;
             // Add the assistant's response to history
             history.push({
                 role: 'assistant',
                 content: [{ type: 'text', text: result }]
             });
-            // Display messages in chat area
-            displayMessage('user', question);
-            displayMessage('ai', result);
         } else {
             // Handle streaming response for text
             const reader = serverResponse.body.getReader();
@@ -81,23 +78,20 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
                 const chunk = decoder.decode(value, { stream: true });
                 result += chunk;
                 let processedResult = marked.parse(result);  // Convert Markdown to HTML
-                responseDiv.innerHTML = `<strong>Response from xAI:</strong> ${processedResult}`;  // Update in real-time
+                aiBubble.innerHTML = processedResult;
             }
             // Add the assistant's response to history
             history.push({
                 role: 'assistant',
                 content: [{ type: 'text', text: result }]
             });
-            // Display messages in chat area
-            displayMessage('user', question);
-            displayMessage('ai', result);
         }
 
         document.getElementById('questionInput').value = '';  // Clear the input field
         // Save back to sessionStorage
         sessionStorage.setItem('conversationHistory', JSON.stringify(history));
     } catch (error) {
-        responseDiv.innerHTML = `Error: ${error.message}`;
+        aiBubble.innerHTML = `Error: ${error.message}`;
         console.error(error);
     }
 });
@@ -105,10 +99,9 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
 // New: Add event listener for Enter key on the textarea
 document.getElementById('questionInput').addEventListener('keydown', function (event) {
     if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();  // Prevent adding a new line
-        document.getElementById('chatForm').dispatchEvent(new Event('submit'));  // Trigger form submit
+        event.preventDefault();
+        document.getElementById('chatForm').dispatchEvent(new Event('submit'));
     }
-    // If Shift+Enter is pressed, do nothing to allow new lines
 });
 
 // Display a chat message as a dialog bubble
@@ -124,11 +117,13 @@ function displayMessage(sender, text) {
     label.textContent = (sender === 'user' ? 'You' : 'AI');
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.innerHTML = text; // Use innerHTML to render image tags
+    bubble.innerHTML = text;
     msgDiv.appendChild(label);
     msgDiv.appendChild(bubble);
     chat.appendChild(msgDiv);
     chat.scrollTop = chat.scrollHeight;
+
+    return bubble;
 }
 
 // Dark mode toggle button logic
@@ -140,42 +135,41 @@ window.addEventListener('DOMContentLoaded', function () {
         };
     }
     // Model toggle logic
-    const modelToggle = document.getElementById('modelToggle');
-    const imageModelToggle = document.getElementById('imageModelToggle');
+    const textModelSelect = document.getElementById('textModelSelect');
+    const imageModelSelect = document.getElementById('imageModelSelect');
     const modelHint = document.getElementById('modelHint');
     const questionInput = document.getElementById('questionInput');
-    if (modelToggle && imageModelToggle && modelHint && questionInput) {
-        // Set initial hint
-        modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : currentModel === 'grok-3-mini-latest' ? 'Current model: Grok-3 Mini' : 'Current model: Grok-2 Image';
 
-        modelToggle.onclick = function () {
-            console.log('Text Model Button clicked!');
-            if (currentModel === 'grok-3-latest') {
-                currentModel = 'grok-3-mini-latest';
-                modelToggle.classList.add('active');
-                imageModelToggle.classList.remove('active');
-            } else {
-                currentModel = 'grok-3-latest';
-                modelToggle.classList.remove('active');
-                imageModelToggle.classList.remove('active');
-            }
-            modelToggle.textContent = 'Thinking';
-            modelHint.textContent = currentModel === 'grok-3-latest' ? 'Current model: Grok-3' : 'Current model: Grok-3 Mini';
+    if (textModelSelect && imageModelSelect && modelHint && questionInput) {
+        modelHint.textContent = `Current model: ${currentModel}`;
+
+        textModelSelect.addEventListener('change', function () {
+            currentModel = textModelSelect.value;
+            imageModelSelect.selectedIndex = 0;
+            modelHint.textContent = `Current model: ${currentModel}`;
             questionInput.placeholder = 'e.g., What\'s the meaning of life?';
-        };
+        });
 
-        imageModelToggle.onclick = function () {
-            console.log('Image Model Button clicked!');
-            currentModel = 'grok-2-image';
-            imageModelToggle.classList.add('active');
-            modelToggle.classList.remove('active');
-            modelHint.textContent = 'Current model: Grok-2 Image';
+        imageModelSelect.addEventListener('change', function () {
+            currentModel = imageModelSelect.value;
+            // Reset the text select to the hidden default option
+            textModelSelect.selectedIndex = 0;
+            modelHint.textContent = `Current model: ${currentModel}`;
             questionInput.placeholder = 'e.g., A view in space';
-        };
+        });
     }
     // Display chat history
     const history = JSON.parse(sessionStorage.getItem('conversationHistory')) || [];
     history.forEach(msg => {
         displayMessage(msg.sender, msg.text);
     });
+
+    // Clear chat logic
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    if (clearChatBtn) {
+        clearChatBtn.onclick = function () {
+            sessionStorage.removeItem('conversationHistory');
+            document.getElementById('chat').innerHTML = '';
+        };
+    }
 });

@@ -1,4 +1,4 @@
-# xAI Chat Interface Project
+# xAI Desktop
 
 ## Description
 
@@ -34,8 +34,8 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Shawshank01/xAI-native.git
-cd xAI-native
+git clone https://github.com/Shawshank01/xAI-desktop.git
+cd xAI-desktop
 ```
 
 ### 2. Install Dependencies

@@ -54,14 +54,16 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
             const responseData = await serverResponse.json();
             let result = '';
             if (responseData.images && responseData.images.length > 0) {
-                result = 'Generated Images:\n';
+                result = 'Generated Images:<br>';
                 responseData.images.forEach((img, index) => {
-                    result += `Image ${index + 1}: <img src="${img.url}" alt="Generated Image ${index + 1}" style="max-width: 100%; height: auto;"><br>`;
+                    const safeUrl = encodeURI(img.url);
+                    result += `Image ${index + 1}: <img src="${safeUrl}" alt="Generated Image ${index + 1}" style="max-width: 100%; height: auto;"><br>`;
                 });
             } else {
                 result = 'No images generated. Response: ' + JSON.stringify(responseData);
             }
-            aiBubble.innerHTML = result;
+            const sanitizedHtml = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(result) : result;
+            aiBubble.innerHTML = sanitizedHtml;
             // Add the assistant's response to history
             history.push({
                 role: 'assistant',
@@ -77,8 +79,9 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
                 result += chunk;
-                let processedResult = marked.parse(result);  // Convert Markdown to HTML
-                aiBubble.innerHTML = processedResult;
+                const rawHtml = marked.parse(result);  // Convert Markdown to HTML
+                const sanitizedHtml = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(rawHtml) : rawHtml;
+                aiBubble.innerHTML = sanitizedHtml;
             }
             // Add the assistant's response to history
             history.push({
@@ -91,7 +94,7 @@ document.getElementById('chatForm').addEventListener('submit', async function (e
         // Save back to sessionStorage
         sessionStorage.setItem('conversationHistory', JSON.stringify(history));
     } catch (error) {
-        aiBubble.innerHTML = `Error: ${error.message}`;
+        aiBubble.textContent = `Error: ${error.message}`;
         console.error(error);
     }
 });
@@ -117,7 +120,11 @@ function displayMessage(sender, text) {
     label.textContent = (sender === 'user' ? 'You' : 'AI');
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.innerHTML = text;
+    if (sender === 'user') {
+        bubble.textContent = text;
+    } else {
+        bubble.innerHTML = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(text) : text;
+    }
     msgDiv.appendChild(label);
     msgDiv.appendChild(bubble);
     chat.appendChild(msgDiv);

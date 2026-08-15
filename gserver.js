@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import open from 'open';
 
 dotenv.config();
 
@@ -55,6 +56,13 @@ app.post('/ask-xai', async (req, res) => {
 
 // Start the server
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    if (process.env.NODE_ENV !== 'test' && !process.env.CI) {
+        try {
+            await open(`http://localhost:${PORT}/index.html`);
+        } catch (err) {
+            console.error('Failed to open browser automatically:', err.message);
+        }
+    }
 });

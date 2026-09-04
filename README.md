@@ -24,7 +24,7 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 
 ## Prerequisites
 
-- **Node.js and npm**: Version 18 or higher.
+- **Node.js and pnpm**: Node.js 26 or higher and [pnpm](https://pnpm.io/) (v11 or higher).
 - **xAI API Key**: Sign up at [xAI Console](https://console.x.ai/).
 - **Browser**: Tested with Brave, Firefox, and Safari.
 
@@ -42,7 +42,7 @@ cd xAI-desktop
 ### 2. Install Dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3. Set Up Environment Variables
@@ -62,7 +62,7 @@ XAI_API_KEY=your_xai_api_key_here
 Run the following command:
 
 ```bash
-npm start
+pnpm start
 ```
 
 This command opens the UI in your default browser and starts the Node server in the foreground.

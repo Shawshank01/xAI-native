@@ -1,15 +1,22 @@
 {
   "name": "xai-desktop",
+  "version": "1.0.0",
   "type": "module",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^5.1.0",
-    "marked": "^15.0.11",
-    "open": "^10.1.2",
-    "openai": "^4.96.2"
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=26.0.0",
+    "pnpm": ">=11.0.0"
   },
   "scripts": {
-    "start": "node gserver.js"
+    "start": "node gserver.js",
+    "test": "NODE_ENV=test node -e \"import('./gserver.js').then(async () => { const res = await fetch('http://localhost:3000/'); if (res.ok) { console.log('Server healthcheck passed (HTTP ' + res.status + ')'); process.exit(0); } else { process.exit(1); } }).catch(err => { console.error(err); process.exit(1); });\""
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "marked": "^15.0.12",
+    "open": "^10.2.0",
+    "openai": "^4.104.0"
   }
 }

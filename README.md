@@ -4,7 +4,7 @@
 
 This is a local, user-friendly web application that provides a graphical interface for chatting with xAI's latest models via their official API. Designed for a seamless experience, this tool allows for rich communication with Grok using a simple text interface, full Markdown-rendered streaming responses, and advanced image generation capabilities.
 
-The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Node.js with Express** to securely handle API requests and manage conversation context.
+The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Deno** with standard web APIs to securely handle API requests and stream responses.
 
 ---
 
@@ -24,7 +24,7 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 
 ## Prerequisites
 
-- **Node.js and pnpm**: Node.js 26 or higher and [pnpm](https://pnpm.io/) (v11 or higher).
+- **Deno**: Version 2.0 or higher ([Install Deno](https://deno.com/)).
 - **xAI API Key**: Sign up at [xAI Console](https://console.x.ai/).
 - **Browser**: Tested with Brave, Firefox, and Safari.
 
@@ -39,13 +39,7 @@ git clone https://github.com/Shawshank01/xAI-desktop.git
 cd xAI-desktop
 ```
 
-### 2. Install Dependencies
-
-```bash
-pnpm install
-```
-
-### 3. Set Up Environment Variables
+### 2. Set Up Environment Variables
 
 Create a `.env` file in the root directory:
 
@@ -62,14 +56,14 @@ XAI_API_KEY=your_xai_api_key_here
 Run the following command:
 
 ```bash
-pnpm start
+deno task start
 ```
 
-This command opens the UI in your default browser and starts the Node server in the foreground.
+This command opens the UI in your default browser and starts the server in the foreground.
 
 ### 2. Stop the App
 
-Simply press **`Ctrl + C`** in your terminal. This will safely stop the Node server.
+Simply press **`Ctrl + C`** in your terminal. This will safely stop the server.
 
 ### 3. Troubleshooting "Ghost" Servers
 
@@ -83,6 +77,4 @@ lsof -ti :3000 | xargs kill -9
 
 ## Acknowledgements
 
-- [Express](https://expressjs.com/) — Backend server
-- [OpenAI SDK](https://www.npmjs.com/package/openai) — Utilizes xAI's compatibility layer
-- [Marked](https://github.com/markedjs/marked) — Markdown parsing
+- [OpenAI SDK](https://www.npmjs.com/package/openai) — Utilises xAI's compatibility layer

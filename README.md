@@ -6,8 +6,6 @@ This is a local, user-friendly web application that provides a graphical interfa
 
 The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Deno** with standard web APIs to securely handle API requests and stream responses.
 
----
-
 ## Features
 
 - **Latest xAI Models**: Support for the entire new lineup, including:
@@ -20,15 +18,11 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 - **Dark Mode**: Automatically follows your system's default theme or can be toggled manually.
 - **Persistent Context**: Full conversation history is preserved during your session for context-aware responses.
 
----
-
 ## Prerequisites
 
 - **Deno**: Version 2.0 or higher ([Install Deno](https://deno.com/)).
 - **xAI API Key**: Sign up at [xAI Console](https://console.x.ai/).
 - **Browser**: Tested with Brave, Firefox, and Safari.
-
----
 
 ## Installation
 
@@ -46,8 +40,6 @@ Create a `.env` file in the root directory:
 ```env
 XAI_API_KEY=your_xai_api_key_here
 ```
-
----
 
 ## Usage
 
@@ -72,8 +64,6 @@ If you get a `400` or `Port in use` error, it likely means a server process is s
 ```bash
 lsof -ti :3000 | xargs kill -9
 ```
-
----
 
 ## Acknowledgements
 

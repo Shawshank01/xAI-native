@@ -11,8 +11,8 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 ## Features
 
 - **Latest xAI Models**: Support for the entire new lineup, including:
-  - **Language**: `grok-4.20-0309-reasoning`, `non-reasoning`, `multi-agent-0309`, and fast variants.
-  - **Image**: `grok-imagine-image-pro` and `grok-imagine-image`.
+  - **Language**: `grok-4.6` (flagship reasoning & chat), `grok-4.5`, `grok-4.3`, `grok-4.1-fast`, and `grok-4.20-0309-reasoning`.
+  - **Image**: `grok-imagine-image-2.0`.
 - **Model Selection Dropdowns**: Easily switch between language and image models with clean dropdown menus.
 - **Clear Chat**: A dedicated button to wipe your local session history and start fresh instantly.
 - **Rich Streaming Response**: AI responses stream directly into the chat bubbles in real-time with Markdown parsing.

@@ -11,7 +11,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
     }
 });
 
-let currentModel = 'grok-4.20-0309-reasoning';
+let currentModel = 'grok-4.6';
 
 document.getElementById('chatForm').addEventListener('submit', async function (event) {
     event.preventDefault();

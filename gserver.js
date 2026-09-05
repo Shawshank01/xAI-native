@@ -27,7 +27,10 @@ export async function handleRequest(req) {
             const { messages, model } = await req.json();
 
             if (model && model.startsWith("grok-imagine")) {
-                const prompt = messages[messages.length - 1].content[0].text;
+                const lastMessage = messages[messages.length - 1];
+                const prompt = typeof lastMessage?.content === "string"
+                    ? lastMessage.content
+                    : (Array.isArray(lastMessage?.content) ? lastMessage.content[0]?.text || lastMessage.content[0] : "");
                 const imageResponse = await client.images.generate({
                     model: model,
                     prompt: prompt,
@@ -43,7 +46,7 @@ export async function handleRequest(req) {
                 );
             } else {
                 const completion = await client.chat.completions.create({
-                    model: model || "grok-4.20-0309-reasoning",
+                    model: model || "grok-4.6",
                     messages: messages,
                     stream: true,
                 });

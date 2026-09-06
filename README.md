@@ -20,7 +20,7 @@ The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses
 
 ## Prerequisites
 
-- **Deno**: Version 2.0 or higher ([Install Deno](https://deno.com/)).
+- **Deno**: Version 2.9.6 or higher ([Install Deno](https://deno.com/)).
 - **xAI API Key**: Sign up at [xAI Console](https://console.x.ai/).
 - **Browser**: Tested with Brave, Firefox, and Safari.
 
@@ -63,6 +63,12 @@ If you get a `400` or `Port in use` error, it likely means a server process is s
 
 ```bash
 lsof -ti :3000 | xargs kill -9
+```
+
+Clean redundant dependencies:
+
+```bash
+deno clean
 ```
 
 ## Acknowledgements

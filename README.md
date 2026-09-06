@@ -4,7 +4,7 @@
 
 This is a local, user-friendly web application that provides a graphical interface for chatting with xAI's latest models via their official API. Designed for a seamless experience, this tool allows for rich communication with Grok using a simple text interface, full Markdown-rendered streaming responses, and advanced image generation capabilities.
 
-The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Deno** with standard web APIs to securely handle API requests and stream responses.
+The frontend is built with **HTML, CSS, and JavaScript**, while the backend uses **Deno 2** with standard web APIs to securely handle API requests and stream responses.
 
 ## Features
 
@@ -43,7 +43,7 @@ XAI_API_KEY=your_xai_api_key_here
 
 ## Usage
 
-### 1. Start the App
+### Start the App
 
 Run the following command:
 
@@ -53,11 +53,11 @@ deno task start
 
 This command opens the UI in your default browser and starts the server in the foreground.
 
-### 2. Stop the App
+### Stop the App
 
 Simply press **`Ctrl + C`** in your terminal. This will safely stop the server.
 
-### 3. Troubleshooting "Ghost" Servers
+### Troubleshooting "Ghost" Servers
 
 If you get a `400` or `Port in use` error, it likely means a server process is stuck in the background. To clear it:
 
